@@ -29,28 +29,6 @@ def policy(env, num_timesteps):
     )
     return pi
 
-def train(num_timesteps, model_path):
-    # create environment
-    env = gym.make("HumanoidBulletEnv-v0")
-    # create session
-    U.make_session(num_cpu=1).__enter__()
-    # scale rewards by a factor of 10
-    env = RewScale(env, 0.1)
-    
-    pi = policy(env, num_timesteps)
-          
-    env.close()
-    # save model
-    if model_path:
-        U.save_state(model_path)
-    return pi
-
-class RewScale(gym.RewardWrapper):
-    def __init__(self, env, scale):
-        gym.RewardWrapper.__init__(self, env)
-        self.scale = scale
-    def reward(self, r):
-        return r * self.scale
 
 def test(model_path):
     physicsClient = p.connect(p.GUI)
@@ -83,14 +61,7 @@ def main():
     parser.set_defaults(num_timesteps=int(5e6))
     args = parser.parse_args()
 
-    if args.train:
-        print('Training the humanoid agent')
-        # train the agent
-        train(num_timesteps=args.num_timesteps, model_path=args.model_path)
-    else:
-        print('Testing the humanoid agent')
-        # test agent
-        test(model_path=args.model_path)
+    test(model_path=args.model_path)
 
 if __name__ == '__main__':
     main()
