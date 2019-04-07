@@ -1,6 +1,7 @@
 import argparse
 import os
 import gym
+import pybullet as p
 import pybullet_envs
 from baselines import deepq
 from baselines.ppo1 import mlp_policy, pposgd_simple
@@ -52,6 +53,7 @@ class RewScale(gym.RewardWrapper):
         return r * self.scale
 
 def test(model_path):
+    physicsClient = p.connect(p.GUI)
     env = gym.make("HumanoidBulletEnv-v0")
     # test agent
     pi = policy(env, 1)
@@ -60,14 +62,14 @@ def test(model_path):
     env.reset()
     for _ in range(1):
         ob = env.reset()
-        env.render()
+        env.render(mode='human')
         time.sleep(0.1)
         total_reward = 0
         while True:
             action = pi.act(stochastic=False, ob=ob)[0]
             ob, reward, done, _ =  env.step(action)
             total_reward += reward
-            env.render()
+            env.render(mode='human')
             time.sleep(0.1)
             if done:
                 print('Total Reward for current episode: {}'.format(total_reward))
@@ -76,9 +78,9 @@ def test(model_path):
 def main():
     # setup parser
     parser = argparse.ArgumentParser(description='Train Humanoid Agent.')
-    parser.add_argument('--model-path', default=os.path.join('../../agents/', 'humanoid_policy5M'))
+    parser.add_argument('--model-path', default=os.path.join('../../agents/', 'humanoid_policy'))
     parser.add_argument('--train', type=int, default=0, help='0 = Test, 1 = Train')
-    parser.set_defaults(num_timesteps=int(10000))
+    parser.set_defaults(num_timesteps=int(5e6))
     args = parser.parse_args()
 
     if args.train:
