@@ -1,66 +1,94 @@
 import argparse
+import os
 import gym
 import pybullet_envs
 from baselines import deepq
+from baselines.ppo1 import mlp_policy, pposgd_simple
+from baselines.common import tf_util as U
+from baselines import logger
+import time
 
-
-# setup parser
-parser = argparse.ArgumentParser(description='Train Humanoid Agent.')
-parser.add_argument(
-    '--model_dir',
-    type=str,
-    default='/home/cse496dl/atendle/Final_Project/DeepParkour/agents',
-    help='directory where agents are saved')
-parser.add_argument('--batch_size', type=int, default=64, help='mini batch size for training')
-parser.add_argument('--network', type=int, default='mlp', help='model/agent to use')
-parser.add_argument('--total_timesteps', type=int, default=100000, help='number of timesteps to run')
-parser.add_argument('--learning_rate', type=float, default=5e-4, help='Learning rate for optimizer')
-parser.add_argument('--gamma', type=float, default=1.0, help='discount factor')
-parser.add_argument('--print_frequency', type=float, default=100, help='Frequency of prints')
-parser.add_argument('--exp_frac', type=float, default = 0.1, help='fraction of entire training period over which the exploration rate is annealed')
-parser.add_argument('--exp_final', type=float, default = 0.02, help='final value of random action probability')
-parser.add_argument('--buffer', type=int, default=50000, help='size of the replay buffer')
-parser.add_argument('--render', type=int, default=0, help='flag to render(1 == render) (0 == do not render)')
-# setup parser arguments
-args = parser.parse_args()
-
-def main():
-    # create environment
-    env = gym.make("HumanoidBulletEnv-v0")
-    # render environment
-    if args.render == 1:
-        env.render(mode="human")
-        
-    # log necessary hyperparameters
-    print('Number of observations collected by the Environment: {}'.format(env.observation_space.shape[0]))
-    print('Number of actions an agent can take: {}'.format(env.action_space.shape[0]))
-    print('Batch Size: {}'.format(args.batch_size))
-    print('Discount Factor: {}'.format(args.gamma))
-    print('Type of Network: {}'.format(args.network))
-    print('Learning Rate: {}'.format(args.learning_rate)
-    print('Total Timesteps: {}'.format(args.total_timesteps))
-    print('Buffer Size: {}'.format(args.buffer))
-    print('Exploration Fraction: {}'.format(args.exp_frac))
-    print('Exploration Final Episode: {}'.format(args.exp_final))
-      
-   
+def policy(env, num_timesteps):
+    # create the policy function
+    def policy_fn(name, ob_space, ac_space):
+        return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
+        hid_size=64, num_hid_layers=2)
     
     # train the agent using learning algorithm
-    act = deepq.learn(
-        env,
-        batch_size=args.batch_size,
-        gamma=args.gamma,
-        network=args.network,
-        lr=args.learning_rate,
-        total_timesteps=args.total_timesteps,
-        buffer_size=args.buffer,
-        exploration_fraction=args.exp_frac,
-        exploration_final_eps=args.exp_final,
-        print_freq=args.print_frequency
+    pi = pposgd_simple.learn(env, policy_fn,
+        max_timesteps=num_timesteps,
+        timesteps_per_actorbatch=2048,
+        clip_param=0.1, entcoeff=0.0,
+        optim_epochs=10,
+        optim_stepsize=1e-4,
+        optim_batchsize=64,
+        gamma=0.99,
+        lam=0.95,
+        schedule='constant',
     )
+    return pi
+
+def train(num_timesteps, model_path):
+    # create environment
+    env = gym.make("HumanoidBulletEnv-v0")
+    # create session
+    U.make_session(num_cpu=1).__enter__()
+    # scale rewards by a factor of 10
+    env = RewScale(env, 0.1)
+    
+    pi = policy(env, num_timesteps)
           
-    print("Saving model")
-    act.save("humanoid_model.pkl")
+    env.close()
+    # save model
+    if model_path:
+        U.save_state(model_path)
+    return pi
+
+class RewScale(gym.RewardWrapper):
+    def __init__(self, env, scale):
+        gym.RewardWrapper.__init__(self, env)
+        self.scale = scale
+    def reward(self, r):
+        return r * self.scale
+
+def test(model_path):
+    env = gym.make("HumanoidBulletEnv-v0")
+    # test agent
+    pi = policy(env, 1)
+    U.load_state(model_path)
+    
+    env.reset()
+    for _ in range(1):
+        ob = env.reset()
+        env.render()
+        time.sleep(0.1)
+        total_reward = 0
+        while True:
+            action = pi.act(stochastic=False, ob=ob)[0]
+            ob, reward, done, _ =  env.step(action)
+            total_reward += reward
+            env.render()
+            time.sleep(0.1)
+            if done:
+                print('Total Reward for current episode: {}'.format(total_reward))
+                total_reward = 0
+                ob = env.reset()
+def main():
+    # setup parser
+    parser = argparse.ArgumentParser(description='Train Humanoid Agent.')
+    parser.add_argument('--model-path', default=os.path.join('../../agents/', 'humanoid_policy5M'))
+    parser.add_argument('--train', type=int, default=0, help='0 = Test, 1 = Train')
+    parser.set_defaults(num_timesteps=int(10000))
+    args = parser.parse_args()
+
+    if args.train:
+        print('Training the humanoid agent')
+        # train the agent
+        train(num_timesteps=args.num_timesteps, model_path=args.model_path)
+    else:
+        print('Testing the humanoid agent')
+        # test agent
+        test(model_path=args.model_path)
 
 if __name__ == '__main__':
     main()
