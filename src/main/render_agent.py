@@ -22,7 +22,7 @@ def test(model_path):
     # test agent
     env = gym.make("HumanoidBulletEnv-v0")
     session, ob, actions = load_policy(model_path)
-    env.render(mode="human")
+    # env.render(mode="human")
     env.reset()
     for episode in range(10):
         obs = env.reset()
@@ -38,7 +38,7 @@ def test(model_path):
             total_reward += reward
             if done:
                 print('Episode {}: Total Reward {}'.format(episode+1, total_reward))
-
+    env.close()
 def main():
     # setup parser
     parser = argparse.ArgumentParser(description='Train Humanoid Agent.')
