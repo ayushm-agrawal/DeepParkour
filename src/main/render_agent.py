@@ -1,64 +1,49 @@
 import argparse
 import os
 import gym
-import pybullet as p
 import pybullet_envs
 from baselines import deepq
 from baselines.ppo1 import mlp_policy, pposgd_simple
 from baselines.common import tf_util as U
 from baselines import logger
-import time
+import tensorflow as tf
 
-def policy(env, num_timesteps):
-    # create the policy function
-    def policy_fn(name, ob_space, ac_space):
-        return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
-        hid_size=64, num_hid_layers=2)
-    
-    # train the agent using learning algorithm
-    pi = pposgd_simple.learn(env, policy_fn,
-        max_timesteps=num_timesteps,
-        timesteps_per_actorbatch=2048,
-        clip_param=0.1, entcoeff=0.0,
-        optim_epochs=10,
-        optim_stepsize=1e-4,
-        optim_batchsize=64,
-        gamma=0.99,
-        lam=0.95,
-        schedule='constant',
-    )
-    return pi
+def load_policy(model_path):
+    session = tf.Session()
+    saver = tf.train.import_meta_graph(model_path +'.meta')
+    saver.restore(session, model_path)
+    graph = session.graph
+    ob = graph.get_tensor_by_name('pi/ob:0')
+    actions = graph.get_tensor_by_name('pi/pol/final/BiasAdd:0')
+    return session, ob, actions
 
 
 def test(model_path):
-    physicsClient = p.connect(p.GUI)
-    env = gym.make("HumanoidBulletEnv-v0")
     # test agent
-    pi = policy(env, 1)
-    U.load_state(model_path)
-    
+    env = gym.make("HumanoidBulletEnv-v0")
+    session, ob, actions = load_policy(model_path)
+    # env.render(mode="human")
     env.reset()
-    for _ in range(1):
-        ob = env.reset()
-        env.render(mode='human')
-        time.sleep(0.1)
+    for _ in range(10):
+        obs = env.reset()
+        obs = obs.reshape(1,44)
         total_reward = 0
         while True:
-            action = pi.act(stochastic=False, ob=ob)[0]
-            ob, reward, done, _ =  env.step(action)
+            action = session.run(actions, feed_dict={ob: obs})[0]
+            # pi.act(stochastic=False, ob=ob)[0]
+            obs, reward, done, _ =  env.step(action)
+            obs = obs.reshape(1,44)
+
             total_reward += reward
-            env.render(mode='human')
-            time.sleep(0.1)
             if done:
                 print('Total Reward for current episode: {}'.format(total_reward))
                 total_reward = 0
-                ob = env.reset()
+                break
+
 def main():
     # setup parser
     parser = argparse.ArgumentParser(description='Train Humanoid Agent.')
-    parser.add_argument('--model-path', default=os.path.join('../../agents/', 'humanoid_policy'))
-    parser.add_argument('--train', type=int, default=0, help='0 = Test, 1 = Train')
-    parser.set_defaults(num_timesteps=int(5e6))
+    parser.add_argument('--model-path', default=os.path.join('../../agents/', 'humanoid_policy5M'))
     args = parser.parse_args()
 
     test(model_path=args.model_path)
