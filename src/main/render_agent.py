@@ -22,13 +22,14 @@ def test(model_path):
     # test agent
     env = gym.make("HumanoidBulletEnv-v0")
     session, ob, actions = load_policy(model_path)
-    # env.render(mode="human")
+    env.render(mode="human")
     env.reset()
-    for _ in range(10):
+    for episode in range(10):
         obs = env.reset()
         obs = obs.reshape(1,44)
         total_reward = 0
-        while True:
+        done = False
+        while not done:
             action = session.run(actions, feed_dict={ob: obs})[0]
             # pi.act(stochastic=False, ob=ob)[0]
             obs, reward, done, _ =  env.step(action)
@@ -36,9 +37,7 @@ def test(model_path):
 
             total_reward += reward
             if done:
-                print('Total Reward for current episode: {}'.format(total_reward))
-                total_reward = 0
-                break
+                print('Episode {}: Total Reward {}'.format(episode+1, total_reward))
 
 def main():
     # setup parser
