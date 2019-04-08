@@ -1,5 +1,6 @@
 import argparse
-import os
+import os.path, sys, io
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
 import gym
 import pybullet as p
 import pybullet_envs
@@ -8,6 +9,7 @@ from baselines.ppo1 import mlp_policy, pposgd_simple
 from baselines.common import tf_util as U
 from baselines import logger
 import time
+from model.ppo_policy import PPO_AGENT
 
 def policy(env, num_timesteps):
     # create the policy function
@@ -37,7 +39,8 @@ def train(num_timesteps, model_path):
     # scale rewards by a factor of 10
     env = RewScale(env, 0.1)
     
-    pi = policy(env, num_timesteps)
+    ppo_agent = PPO_AGENT(env)
+    pi = ppo_agent.policy()
           
     env.close()
     # save model
@@ -55,7 +58,7 @@ class RewScale(gym.RewardWrapper):
 def main():
     # setup parser
     parser = argparse.ArgumentParser(description='Train Humanoid Agent.')
-    parser.add_argument('--model-path', default=os.path.join('../../agents/', 'humanoid_policy'))
+    parser.add_argument('--model-path', default=os.path.join('../../agents/', 'humanoid_policyTEST'))
     parser.set_defaults(num_timesteps=int(5e6))
     args = parser.parse_args()
 
