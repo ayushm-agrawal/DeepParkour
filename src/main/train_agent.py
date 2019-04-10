@@ -58,13 +58,15 @@ class RewScale(gym.RewardWrapper):
 def main():
     # setup parser
     parser = argparse.ArgumentParser(description='Train Humanoid Agent.')
-    parser.add_argument('--model-path', default=os.path.join('../../agents/', 'humanoid_policyTEST'))
-    parser.set_defaults(num_timesteps=int(5e6))
+    parser.add_argument('--model-path', default=os.path.join('../../agents/', 'humanoid_run_50Mil'))
+    parser.add_argument('--timesteps', type=int, default=5e7, help='number of training steps to take')
+    # parser.set_defaults(num_timesteps=int(5e6))
     args = parser.parse_args()
+
 
     print('Training the humanoid agent')
     # train the agent
-    train(num_timesteps=args.num_timesteps, model_path=args.model_path)
+    train(num_timesteps=args.timesteps, model_path=args.model_path)
 
 if __name__ == '__main__':
     main()
