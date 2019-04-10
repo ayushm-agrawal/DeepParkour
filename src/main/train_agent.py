@@ -11,25 +11,6 @@ from baselines import logger
 import time
 from model.ppo_policy import PPO_AGENT
 
-def policy(env, num_timesteps):
-    # create the policy function
-    def policy_fn(name, ob_space, ac_space):
-        return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
-        hid_size=64, num_hid_layers=2)
-    
-    # train the agent using learning algorithm
-    pi = pposgd_simple.learn(env, policy_fn,
-        max_timesteps=num_timesteps,
-        timesteps_per_actorbatch=2048,
-        clip_param=0.1, entcoeff=0.0,
-        optim_epochs=10,
-        optim_stepsize=1e-4,
-        optim_batchsize=64,
-        gamma=0.99,
-        lam=0.95,
-        schedule='constant',
-    )
-    return pi
 
 def train(num_timesteps, model_path):
     # create environment
@@ -39,7 +20,7 @@ def train(num_timesteps, model_path):
     # scale rewards by a factor of 10
     env = RewScale(env, 0.1)
     
-    ppo_agent = PPO_AGENT(env)
+    ppo_agent = PPO_AGENT(env, total_timesteps=num_timesteps)
     pi = ppo_agent.policy()
           
     env.close()
@@ -60,7 +41,6 @@ def main():
     parser = argparse.ArgumentParser(description='Train Humanoid Agent.')
     parser.add_argument('--model-path', default=os.path.join('../../agents/', 'humanoid_run_50Mil'))
     parser.add_argument('--timesteps', type=int, default=5e7, help='number of training steps to take')
-    # parser.set_defaults(num_timesteps=int(5e6))
     args = parser.parse_args()
 
 
