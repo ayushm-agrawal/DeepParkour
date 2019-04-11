@@ -1,6 +1,8 @@
 import argparse
 import os.path, sys, io
-sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
+# sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
+sys.path.insert(0, './envs')
+sys.path.insert(0, './src/')
 import gym
 import pybullet as p
 import pybullet_envs
@@ -10,11 +12,11 @@ from baselines.common import tf_util as U
 from baselines import logger
 import time
 from model.ppo_policy import PPO_AGENT
-
+import env
 
 def train(num_timesteps, model_path):
     # create environment
-    env = gym.make("HumanoidBulletEnv-v0")
+    env = gym.make("ObstacleEnv-v0")
     # create session
     U.make_session(num_cpu=1).__enter__()
     # scale rewards by a factor of 10
