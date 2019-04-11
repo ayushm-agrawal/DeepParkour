@@ -39,7 +39,7 @@ class RewScale(gym.RewardWrapper):
 def main():
     # setup parser
     parser = argparse.ArgumentParser(description='Train Humanoid Agent.')
-    parser.add_argument('--model-path', default=os.path.join('../../agents/humanoid_10M/', 'humanoid_policy'))
+    parser.add_argument('--model-path', default=os.path.join('/work/cse496dl/teams/Dropouts/final_project/agents/5M_AGENT/', 'humanoid_policy'))
     parser.add_argument('--timesteps', type=int, default=5e7, help='number of training steps to take')
     args = parser.parse_args()
 
