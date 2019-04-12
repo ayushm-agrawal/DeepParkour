@@ -76,7 +76,7 @@ class WalkerBaseBulletEnv(MJCFBaseBulletEnv):
 		progress = float(self.potential - potential_old)
 
 		feet_collision_cost = 0.0
-		for i,f in enumerate(self.robot.feet): # TODO: Maybe calculating feet contacts could be done within the robot code
+		for i,f in enumerate(self.robot.feet):
 			contact_ids = set((x[2], x[4]) for x in f.contact_list())
 			#print("CONTACT OF '%d' WITH %d" % (contact_ids, ",".join(contact_names)) )
 			if (self.ground_ids & contact_ids):

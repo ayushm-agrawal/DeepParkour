@@ -52,7 +52,7 @@ class WalkerBase(MJCFBasedRobot):
             parts_xyz[0::3].mean(), parts_xyz[1::3].mean(), body_pose.xyz()[2])  # torso z is more informative than mean z
         self.body_rpy = body_pose.rpy()
         z = self.body_xyz[2]
-        if self.initial_z == None:
+        if self.initial_z is None:
             self.initial_z = z
         r, p, yaw = self.body_rpy
         self.walk_target_theta = np.arctan2(self.walk_target_y - self.body_xyz[1],

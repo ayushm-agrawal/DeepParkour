@@ -103,11 +103,6 @@ class XmlBasedRobot:
 
                     joints[joint_name].power_coef = 100.0
 
-                # TODO: Maybe we need this
-                # joints[joint_name].power_coef, joints[joint_name].max_velocity = joints[joint_name].limits()[2:4]
-                # self.ordered_joints.append(joints[joint_name])
-                # self.jdict[joint_name] = joints[joint_name]
-
         return parts, joints, ordered_joints, self.robot_body
 
     def reset_pose(self, position, orientation):
@@ -216,7 +211,7 @@ class SDFBasedRobot(XmlBasedRobot):
 
         self.ordered_joints = []
 
-        self.parts, self.jdict, self.ordered_joints, self.robot_body = self.addToScene(self._p,  # TODO: Not sure if this works, try it with kuka
+        self.parts, self.jdict, self.ordered_joints, self.robot_body = self.addToScene(self._p,
                                                                                        self._p.loadSDF(os.path.join("models_robot", self.model_sdf)))
 
         self.robot_specific_reset(self._p)
