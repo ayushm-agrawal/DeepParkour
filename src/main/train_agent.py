@@ -29,7 +29,7 @@ def train(num_timesteps, model_path):
     env.close()
     # save model
     if model_path:
-        U.save_variables(model_path)
+        U.save_state(model_path)
     return pi
 
 
