@@ -50,8 +50,7 @@ def test(model_path):
 def main():
     # setup parser
     parser = argparse.ArgumentParser(description='Train Humanoid Agent.')
-    parser.add_argument(
-        '--model-path', default=os.path.join('agents/', 'humanoid_policy5M'))
+    parser.add_argument('--model-path', default=os.path.join('../../agents/humanoid_10M', 'humanoid_policy'))
     args = parser.parse_args()
 
     test(model_path=args.model_path)
