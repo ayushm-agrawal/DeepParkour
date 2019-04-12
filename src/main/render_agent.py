@@ -18,9 +18,9 @@ def load_policy(model_path):
     return session, ob, actions
 
 
-def test(model_path):
+def test(render_env, model_path):
     # test agent
-    env = gym.make("HumanoidBulletEnv-v0") # 
+    env = gym.make(render_env) 
     session, ob, actions = load_policy(model_path)
     env.render(mode="human")
     env.reset()
@@ -43,9 +43,9 @@ def main():
     # setup parser
     parser = argparse.ArgumentParser(description='Train Humanoid Agent.')
     parser.add_argument('--model-path', default=os.path.join('../../agents/', 'humanoid_policy5M'))
+    parser.add_argument('--env', type=str, default="HumanoidBulletEnv-v0", help='Environment which is used for training/testing')
     args = parser.parse_args()
-
-    test(model_path=args.model_path)
+    test(render_env=args.env, model_path=args.model_path)
 
 if __name__ == '__main__':
     main()
