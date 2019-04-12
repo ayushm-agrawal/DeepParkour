@@ -1,10 +1,11 @@
-# import os.path, sys, io
-# sys.path.insert(0, './')
-from .scene_stadium import SinglePlayerStadiumScene
-from .env_bases import MJCFBaseBulletEnv
 import numpy as np
+
 import pybullet
-from robot_locomotors import Humanoid
+from .robot_locomotors import Humanoid
+
+from .env_bases import MJCFBaseBulletEnv
+from .scene_stadium import SinglePlayerStadiumScene
+
 
 class WalkerBaseBulletEnv(MJCFBaseBulletEnv):
 	def __init__(self, robot, render=False):

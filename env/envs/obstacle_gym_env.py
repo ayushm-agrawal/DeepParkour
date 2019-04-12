@@ -12,7 +12,7 @@ import numpy as np
 import pybullet
 
 import random
-from . import bullet_client
+from pybullet_utils import bullet_client
 import pybullet_data
 from pkg_resources import parse_version
 

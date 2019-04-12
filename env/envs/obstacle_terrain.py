@@ -12,7 +12,7 @@ p.resetDebugVisualizerCamera(15,-346,-16,[-1,0,1]);
 
 p.configureDebugVisualizer(p.COV_ENABLE_RENDERING,0)
 p.setGravity(0,0,-10)
-p.loadURDF("humanoid/humanoid.urdf", basePosition = [0,0, 1])
+# p.loadURDF("humanoid/humanoid.urdf", basePosition = [0,0, 1])
 p.loadURDF("plane100.urdf")
 
 
