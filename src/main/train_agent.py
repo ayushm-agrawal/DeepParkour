@@ -18,7 +18,6 @@ from src.model.ppo_policy import PPO_AGENT
 def train(num_timesteps, model_path):
     # create environment
     env = gym.make("ObstacleEnv-v0")
-    # env.render(mode='human')
     # create session
     U.make_session(num_cpu=2).__enter__()
     # scale rewards by a factor of 10
