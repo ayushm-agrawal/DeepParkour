@@ -127,7 +127,7 @@ class WalkerBaseBulletEnv(MJCFBaseBulletEnv):
 		self.camera.move_and_look_at(self.camera_x, y-2.0, 1.4, x, y, 1.0)
 
 
-class HumanoidBulletEnv(WalkerBaseBulletEnv):
+class ObstacleBulletEnv(WalkerBaseBulletEnv):
 	def __init__(self, robot=Humanoid(), render=False):
 		self.robot = robot
 		WalkerBaseBulletEnv.__init__(self, self.robot, render)

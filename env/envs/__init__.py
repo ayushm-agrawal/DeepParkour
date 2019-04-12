@@ -1,1 +1,1 @@
-from env.envs.gym_locomotion_env import HumanoidBulletEnv
+from env.envs.gym_locomotion_env import ObstacleBulletEnv
