@@ -1,6 +1,8 @@
 import inspect
 import os
+import random
 
+import numpy as np
 import pybullet_data
 from pybullet_envs.scene_abstract import Scene
 
@@ -26,26 +28,32 @@ class StadiumScene(Scene):
         if (self.stadiumLoaded == 0):
             self.stadiumLoaded = 1
 
-            # stadium_pose = cpp_household.Pose()
-            # if self.zero_at_running_strip_start_line:
-            #	 stadium_pose.set_xyz(27, 21, 0)  # see RUN_STARTLINE, RUN_RAD constants
-
             filename = os.path.join(
                 pybullet_data.getDataPath(), "plane_stadium.sdf")
             self.ground_plane_mjcf = self._p.loadSDF(filename)
-            #filename = os.path.join(pybullet_data.getDataPath(),"stadium_no_collision.sdf")
-            #self.ground_plane_mjcf = self._p.loadSDF(filename)
-            #
+            # filename_1 = "chut.urdf"
+            boxHalfLength = 0.1
+            boxHalfWidth = 1.5
+            boxHalfHeight = 0.3
+            segmentLength = 10
+
+            colBoxId = pybullet.createCollisionShape(pybullet.GEOM_BOX, halfExtents=[
+                                                     boxHalfLength, boxHalfWidth, boxHalfHeight])
+
+            segmentStart = -5
+            obstacle_gap = 7.5
+
+            for i in range(segmentLength):
+                pybullet.createMultiBody(baseMass=0, baseCollisionShapeIndex=colBoxId, basePosition=[
+                                         segmentStart+obstacle_gap, 0, 0])
+                segmentStart = segmentStart+10
+
             for i in self.ground_plane_mjcf:
                 self._p.changeDynamics(
                     i, -1, lateralFriction=0.8, restitution=0.5)
                 self._p.changeVisualShape(i, -1, rgbaColor=[1, 1, 1, 0.8])
                 self._p.configureDebugVisualizer(
                     pybullet.COV_ENABLE_PLANAR_REFLECTION, 1)
-
-            #	for j in range(p.getNumJoints(i)):
-            #		self._p.changeDynamics(i,j,lateralFriction=0)
-            # despite the name (stadium_no_collision), it DID have collision, so don't add duplicate ground
 
 
 class SinglePlayerStadiumScene(StadiumScene):

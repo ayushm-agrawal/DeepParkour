@@ -24,7 +24,7 @@ def load_policy(model_path):
 
 def test(model_path):
     # test agent
-    env = gym.make("HumanoidBulletEnv-v0")
+    env = gym.make("ObstacleEnv-v0")
     session, ob, actions = load_policy(model_path)
     env.render(mode="human")
     U.make_session(num_cpu=2).__enter__()
