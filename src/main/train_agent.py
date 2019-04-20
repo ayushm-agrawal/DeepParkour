@@ -54,6 +54,7 @@ def main():
     # train the agent
 
     print("=================================================")
+    print("Environment: {}".format(args.env))
     print("Progress multiplied by 1.25")
     print("Joint motor torque action clip to -15 and +15")
     print("=================================================")
