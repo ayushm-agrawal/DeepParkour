@@ -35,7 +35,7 @@ class WalkerBase(MJCFBasedRobot):
         assert (np.isfinite(a).all())
         for n, j in enumerate(self.ordered_joints):
             j.set_motor_torque(self.power * j.power_coef *
-                               float(np.clip(a[n], -1, +1)))
+                               float(np.clip(a[n], -15, +15)))
 
     def calc_state(self):
         j = np.array([j.current_relative_position()
@@ -89,7 +89,7 @@ class WalkerBase(MJCFBasedRobot):
             print(self.scene.frame_skip)
             print("self.scene.timestep")
             print(self.scene.timestep)
-        return - self.walk_target_dist / self.scene.dt
+        return - (1.25 * self.walk_target_dist) / self.scene.dt
 
 
 class Humanoid(WalkerBase):
@@ -147,7 +147,7 @@ class Humanoid(WalkerBase):
         force_gain = 1
         for i, m, power in zip(range(17), self.motors, self.motor_power):
             m.set_motor_torque(
-                float(force_gain * power * self.power * np.clip(a[i], -1, +1)))
+                float(force_gain * power * self.power * np.clip(a[i], -15, +15)))
 
     def alive_bonus(self, z, pitch):
         # 2 here because 17 joints produce a lot of electricity cost just from policy noise, living must be better than dying

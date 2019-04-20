@@ -5,6 +5,6 @@
 #SBATCH --partition=cse496dl
 #SBATCH --gres=gpu
 #SBATCH --nodes=1
-#SBATCH --output=/work/cse496dl/teams/Dropouts/final_project/out_files/50M_agent.out
+#SBATCH --output=/work/cse496dl/teams/Dropouts/final_project/out_files/run_agent_progress_scale.out
 
-python -u $@ --timesteps=10000 --env=HumanoidBulletEnv-v0 --model-path=/work/cse496dl/teams/Dropouts/final_project/agents/50M_agent/humanoid_policy
+python -u $@ --timesteps=5000000 --env=HumanoidBulletEnv-v0 --model-path=/work/cse496dl/teams/Dropouts/final_project/agents/run_agent_progress_scale/humanoid_policy
