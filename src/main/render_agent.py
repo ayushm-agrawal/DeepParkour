@@ -22,14 +22,16 @@ def load_policy(model_path):
     return session, ob, actions
 
 
-def test(render_env, model_path):
+def test(render_env, model_path, render, episodes):
     # test agent
     env = gym.make(render_env)
     session, ob, actions = load_policy(model_path)
-    env.render(mode="human")
+
+    if render:
+        env.render(mode="human")
     U.make_session(num_cpu=2).__enter__()
     env.reset()
-    for episode in range(10):
+    for episode in range(episodes):
         obs = env.reset()
         obs = obs.reshape(1, 44)
         total_reward = 0
@@ -50,11 +52,13 @@ def test(render_env, model_path):
 def main():
     # setup parser
     parser = argparse.ArgumentParser(description='Train Humanoid Agent.')
-    parser.add_argument('--model-path', default=os.path.join('../../agents/humanoid_10M', 'humanoid_policy'))
+    parser.add_argument('--model-path', default=os.path.join('../agents/10M_AGENT', 'humanoid_policy'))
+    parser.add_argument('--render', type=int, default=1, help="CPU render boolean")
+    parser.add_argument('--num_episodes', type=int, default=10, help='number of episodes to render')
     parser.add_argument('--env', type=str, default="ObstacleEnv-v0", help='Environment which is used for training/testing')
     args = parser.parse_args()
 
-    test(model_path=args.model_path)
+    test(render_env=args.env, model_path=args.model_path, render=args.render, episodes=args.num_episodes)
 
 
 if __name__ == '__main__':
