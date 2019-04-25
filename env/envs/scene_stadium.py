@@ -33,27 +33,27 @@ class StadiumScene(Scene):
             self.ground_plane_mjcf = self._p.loadSDF(filename)
 
             # inserts blocks in the environment
-            # shape of the block
-            # obstacleLength = 0.1
-            # obstacleWidth = 1.5
-            # obstacleHeight = 0.3
-            # num_of_obstacles = 10
+            shape of the block
+            obstacleLength = 0.1
+            obstacleWidth = 1.5
+            obstacleHeight = 0.3
+            num_of_obstacles = 10
 
-            # # create a block
-            # obstacleId = pybullet.createCollisionShape(pybullet.GEOM_BOX, halfExtents=[
-            #     obstacleLength, obstacleWidth, obstacleHeight])
+            # create a block
+            obstacleId = pybullet.createCollisionShape(pybullet.GEOM_BOX, halfExtents=[
+                obstacleLength, obstacleWidth, obstacleHeight])
 
-            # # initial position of the block
-            # position = -5
-            # # gaps between blocks
-            # obstacle_gap = 7.5
+            # initial position of the block
+            position = -5
+            # gaps between blocks
+            obstacle_gap = 7.5
 
-            # # creates all obstacles in the environment
-            # for i in range(num_of_obstacles):
-            #     pybullet.createMultiBody(baseMass=0, baseCollisionShapeIndex=obstacleId, basePosition=[
-            #                              position+obstacle_gap, 0, 0])
-            #     # update the position of the next obstacle
-            #     position = position+10
+            # creates all obstacles in the environment
+            for i in range(num_of_obstacles):
+                pybullet.createMultiBody(baseMass=0, baseCollisionShapeIndex=obstacleId, basePosition=[
+                                         position+obstacle_gap, 0, 0])
+                # update the position of the next obstacle
+                position = position+10
 
             for i in self.ground_plane_mjcf:
                 self._p.changeDynamics(

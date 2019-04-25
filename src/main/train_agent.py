@@ -52,11 +52,8 @@ def main():
 
     print('Training the humanoid agent')
     # train the agent
-
     print("=================================================")
     print("Environment: {}".format(args.env))
-    print("Progress multiplied by 1.25")
-    print("Joint motor torque action clip to -15 and +15")
     print("=================================================")
     train(train_env=args.env, num_timesteps=args.timesteps, model_path=args.model_path)
 
