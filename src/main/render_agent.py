@@ -1,10 +1,12 @@
 """ This file renders trained agents """
 import argparse
 import os
+
 import gym
 import tensorflow as tf
-from baselines.common import tf_util as U
 
+import env
+from baselines.common import tf_util as U
 
 
 def load_policy(model_path):

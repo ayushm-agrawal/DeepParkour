@@ -1,7 +1,12 @@
 """ This file trains the agent """
 import argparse
 import os.path
+
 import gym
+import pybullet_envs
+
+import env
+import pybullet as p
 from baselines.common import tf_util as U
 from src.model.ppo_policy import PpoAgent
 

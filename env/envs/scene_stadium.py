@@ -33,8 +33,7 @@ class StadiumScene(Scene):
                 pybullet_data.getDataPath(), "plane_stadium.sdf")
             self.ground_plane_mjcf = self._p.loadSDF(filename)
 
-            # inserts blocks in the environment
-            shape of the block
+            # inserts blocks in the environment shape of the block
             obstacleLength = 0.1
             obstacleWidth = 1.5
             obstacleHeight = 0.3
