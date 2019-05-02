@@ -1,3 +1,4 @@
+"""  This file has been taken from PyBullet repo """
 import gym
 import gym.spaces
 import gym.utils
@@ -48,7 +49,7 @@ class MJCFBaseBulletEnv(gym.Env):
         return [seed]
 
     def reset(self):
-        if (self.physicsClientId < 0):
+        if self.physicsClientId < 0:
             self.ownsPhysicsClient = True
 
             if self.isRender:
@@ -82,8 +83,8 @@ class MJCFBaseBulletEnv(gym.Env):
             return np.array([])
 
         base_pos = [0, 0, 0]
-        if (hasattr(self, 'robot')):
-            if (hasattr(self.robot, 'body_xyz')):
+        if hasattr(self, 'robot'):
+            if hasattr(self.robot, 'body_xyz'):
                 base_pos = self.robot.body_xyz
 
         view_matrix = self._p.computeViewMatrixFromYawPitchRoll(
@@ -106,8 +107,8 @@ class MJCFBaseBulletEnv(gym.Env):
         return rgb_array
 
     def close(self):
-        if (self.ownsPhysicsClient):
-            if (self.physicsClientId >= 0):
+        if self.ownsPhysicsClient:
+            if self.physicsClientId >= 0:
                 self._p.disconnect()
         self.physicsClientId = -1
 

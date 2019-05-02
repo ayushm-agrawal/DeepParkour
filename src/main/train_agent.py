@@ -1,21 +1,20 @@
+""" This file trains the agent """
 import argparse
-import io
 import os.path
-import sys
-import time
-
 import gym
-import pybullet_envs
-
-import env
-import pybullet as p
-from baselines import deepq, logger
 from baselines.common import tf_util as U
-from baselines.ppo1 import mlp_policy, pposgd_simple
-from src.model.ppo_policy import PPO_AGENT
+from src.model.ppo_policy import PpoAgent
 
 
 def train(train_env, num_timesteps, model_path):
+    """
+    This function trains the model
+    params:
+        - train_env: training environment name
+        - num_timesteps: timesteps to train
+        - model_path: dir to save agent
+    returns:
+    """
     # create environment
     env = gym.make(train_env)
     # create session
@@ -23,17 +22,18 @@ def train(train_env, num_timesteps, model_path):
     # scale rewards by a factor of 10
     env = RewScale(env, 0.1)
 
-    ppo_agent = PPO_AGENT(env, total_timesteps=num_timesteps)
-    pi = ppo_agent.policy()
+    ppo_agent = PpoAgent(env, total_timesteps=num_timesteps)
+    p_i = ppo_agent.policy()
 
     env.close()
     # save model
     if model_path:
         U.save_state(model_path)
-    return pi
+    return p_i
 
 
 class RewScale(gym.RewardWrapper):
+    """ This scales the environment rewards by 1/10 """
     def __init__(self, env, scale):
         gym.RewardWrapper.__init__(self, env)
         self.scale = scale
@@ -43,11 +43,12 @@ class RewScale(gym.RewardWrapper):
 
 
 def main():
+    """ This function sets up the parser and trains the agent """
     # setup parser
     parser = argparse.ArgumentParser(description='Train Humanoid Agent.')
-    parser.add_argument('--model-path', default=os.path.join('/work/cse496dl/teams/Dropouts/final_project/agents/50M_agent/', 'humanoid_policy'))
-    parser.add_argument('--timesteps', type=int, default=5e7, help='number of training steps to take')
-    parser.add_argument('--env', type=str, default="ObstacleEnv-v0", help='Environment which is used for training/testing')
+    parser.add_argument('--model-path', default=os.path.join('../agents/', 'humanoid_policy'))
+    parser.add_argument('--timesteps', type=int, default=5e7, help='number of training steps')
+    parser.add_argument('--env', type=str, default="ObstacleEnv-v0", help='Environment for train')
     args = parser.parse_args()
 
     print('Training the humanoid agent')
