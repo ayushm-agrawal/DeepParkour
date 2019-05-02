@@ -4,7 +4,7 @@
 ## Dependencies
 - requirements.txt includes all the dependecies required to run this project.
 ## Trained Agent:
-- You can watch a few of our agents in this [video](yt.vu/JwcbGknv9CU)
+- You can watch a few of our agents in this [video](https://www.youtube.com/watch?v=JwcbGknv9CU&list=PLz8hBX8C3XA_KuDFDlJgIJxANCX-z6QKn)
 ## Installation
 - Clone the repo and cd into it:
     ```bash
