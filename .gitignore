@@ -1,6 +1,5 @@
 __pycache__
 .vscode
-README.md
 agents/
 DeepParkour.egg-info/
 env.egg-info/
