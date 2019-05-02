@@ -3,6 +3,8 @@
 ### Training a humanoid agent to efficiently apply parkour skills to an obstacle environment.
 ## Dependencies
 - requirements.txt includes all the dependecies required to run this project.
+## Trained Agent:
+- You can watch a few of our agents in this video: yt.vu/JwcbGknv9CU
 ## Installation
 - Clone the repo and cd into it:
     ```bash
