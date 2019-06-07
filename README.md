@@ -1,5 +1,6 @@
 # DeepParkour
 
+![](agent_10M.gif)
 ### Training a humanoid agent to efficiently apply parkour skills to an obstacle environment.
 ## Dependencies
 - requirements.txt includes all the dependecies required to run this project.
